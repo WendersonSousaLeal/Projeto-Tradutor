@@ -12,8 +12,8 @@ Projeto baseado na metodologia ágil SCRUM, procurando desenvolver a Proatividad
 * [Registro das Sprints](#Registro-das-Sprints)
 
 
-# Projeto (API) 
-Este projeto pedagógico abrange áreas profissionais de diversos segmentos e é alicerçado na Metodologia API. Com foco no desenvolvimento de competências e fundamentado nos pilares da inclusão e da resolução de problemas reais da sociedade, a iniciativa visa aprimorar a comunicação e auxiliar o ensino em locais públicos e privados, oferecendo versatilidade para uso em diversas plataformas.
+# Projeto (Tradutor de Libras) 
+Este projeto pedagógico abrange áreas profissionais de diversos segmentos. Com foco no desenvolvimento de competências e fundamentado nos pilares da inclusão e da resolução de problemas reais da sociedade, a iniciativa visa aprimorar a comunicação e auxiliar o ensino em locais públicos e privados, oferecendo versatilidade para uso em diversas plataformas.
 
 # Equipe
 |    Função     | Nome                                  |                                                                                                                                                      LinkedIn & GitHub                                                                                                                                                      |
@@ -36,11 +36,15 @@ Este projeto tem como objetivo ajudar e facilitar na utilização da plataforma 
 ## Tecnologias Utilizadas
 
 * Jira Software
-* Power BI
+* OpenCV
 * Microsoft Excel
-* Slack
-* Python (Colab)
-* Mysql
+* MediaPipe
+* Scikit-learn
+* MLPClassifier
+* StandardScaler
+* Joblib
+* NumPy
+* Python
 
 
 
@@ -48,11 +52,11 @@ Este projeto tem como objetivo ajudar e facilitar na utilização da plataforma 
 
 | Rank | Prioridade | User Story                                                                                                                                              | Estimativa | Sprint |
 |------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|------------|--------|
-| 1    | Alta       | Como síndico, quero abrir solicitações de vistoria predial para atender à legislação de meu município                                                    | 5          | 1      |
-| 2    | Alta       | Como atendente, quero gerenciar as solicitações de vistoria para agendar atendimento                                                                    | 8          | 1      |
-| 3    | Alta       | Como síndico, quero receber o laudo da vistoria predial para anexar ao processo de auditoria da prefeitura                                               | 5          | 2      |
+| 1    | Alta       | conversor automatico dos sinais paa texto                                                    | 5          | 1      |
+| 2    | Alta       | historico das frases                                                                   | 8          | 1      |
+| 3    | Alta       | detecção das mãos  (visão computacional)                                            | 5          | 2      |
 | ...  | Média      | ...                                                                                                                                                     | ...        | ...    |
-| 17   | Baixa      | Como atendente, quero um relatório de aniversários dos funcionários do condomínio que utilizam o sistema para enviar cartões acompanhados de brindes     | 2          | 3      |
+| 17   | Baixa      | brindes     | 2          | 3      |
 
 
 
