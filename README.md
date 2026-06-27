@@ -21,13 +21,8 @@ Este projeto pedagógico abrange áreas profissionais de diversos segmentos. Com
 |  Team Member  | Pietro                |   [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/pietro-oliveira-5551823b6/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/Pietro18023) 
 
 # Objetivo do Projeto
-Este projeto tem como objetivo ajudar e facilitar na utilização da plataforma GitHub, visando:
-* Centralizar os trabalhos e projetos;
-* Organizar e estruturar as informações;
-* Versionar e controlar as alterações;
-* Facilitar o compartilhamento e feedback;
-* Desenvolver habilidades técnicas.
 
+ Ajudar a comunicação entre pessoas surdas e ouvintes através do nosso sistema.
 
 ## Tecnologias Utilizadas
 
