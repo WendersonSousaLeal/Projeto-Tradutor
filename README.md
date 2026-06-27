@@ -1,4 +1,4 @@
-# Tradutor de Libras Template
+# Tradutor de Libras
 
 # Índice
 * [Objetivo do Projeto](#objetivo-do-projeto)
