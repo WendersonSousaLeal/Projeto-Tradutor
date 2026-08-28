@@ -1,4 +1,4 @@
-# Tradutor de Libras
+# LIBRATOR
 
 # Índice
 * [Objetivo do Projeto](#objetivo-do-projeto)
