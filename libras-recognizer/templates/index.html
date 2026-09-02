@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leitor de Libras · Tempo Real</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #12141c;
+    --panel: #1a1d29;
+    --panel-line: #2c3040;
+    --text: #eceef4;
+    --text-dim: #8a8fa3;
+    --amber: #e8a33d;
+    --teal: #4fd1c5;
+    --danger: #e2596b;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(79, 209, 197, 0.06), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(232, 163, 61, 0.06), transparent 40%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px 60px;
+  }
+
+  header {
+    width: 100%;
+    max-width: 980px;
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  h1 span { color: var(--amber); }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-top: 8px;
+    max-width: 560px;
+    line-height: 1.5;
+  }
+
+  main {
+    width: 100%;
+    max-width: 980px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 760px) {
+    main { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Viewfinder (câmera) ---------- */
+  .viewfinder {
+    position: relative;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  .viewfinder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--teal);
+    opacity: 0.85;
+  }
+  .corner.tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+  .corner.tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+  .corner.bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+  .corner.br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+  .scan-tag {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    background: rgba(0,0,0,0.55);
+    padding: 4px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- Painel de leitura ---------- */
+  .readout-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .panel-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .letter-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 96px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--amber);
+    text-shadow: 0 0 24px rgba(232, 163, 61, 0.25);
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+  }
+
+  .letter-display.idle {
+    color: var(--text-dim);
+    font-size: 40px;
+  }
+
+  .letter-display .cursor {
+    display: inline-block;
+    width: 6px;
+    height: 60px;
+    background: var(--text-dim);
+    margin-left: 12px;
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .confidence-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .confidence-track {
+    flex: 1;
+    height: 6px;
+    background: var(--panel-line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--teal);
+    transition: width 0.15s linear;
+  }
+
+  .confidence-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    width: 42px;
+    text-align: right;
+  }
+
+  .status-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    padding-top: 4px;
+    border-top: 1px solid var(--panel-line);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--danger);
+    flex-shrink: 0;
+  }
+
+  .status-dot.active {
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+  }
+
+  footer {
+    max-width: 980px;
+    width: 100%;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">MediaPipe Hands · RandomForest · 21 landmarks/frame</div>
+  <h1>Leitor de <span>Libras</span> em tempo real</h1>
+  <p class="subtitle">
+    Posicione a mão dentro do quadro para que o sistema capture os pontos
+    de referência e classifique a letra do alfabeto manual correspondente.
+  </p>
+</header>
+
+<main>
+  <div class="viewfinder">
+    <img src="{{ url_for('video_feed') }}" alt="Feed da webcam com detecção de mão">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+    <div class="scan-tag">CAM_0 · AO VIVO</div>
+  </div>
+
+  <div class="readout-panel">
+    <div>
+      <div class="panel-label">Letra reconhecida</div>
+      <div class="letter-display idle" id="letterDisplay">
+        <span id="letterChar">-</span><span class="cursor" id="cursor"></span>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-label" style="margin-bottom: 8px;">Confiança do modelo</div>
+      <div class="confidence-row">
+        <div class="confidence-track">
+          <div class="confidence-fill" id="confidenceFill"></div>
+        </div>
+        <div class="confidence-value" id="confidenceValue">0%</div>
+      </div>
+    </div>
+
+    <div class="status-line">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Aguardando mão no quadro...</span>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Pipeline: webcam → MediaPipe HandLandmarker (21 pts) → normalização (translação + escala) → RandomForestClassifier
+</footer>
+
+<script>
+  const letterChar = document.getElementById('letterChar');
+  const letterDisplay = document.getElementById('letterDisplay');
+  const cursor = document.getElementById('cursor');
+  const confidenceFill = document.getElementById('confidenceFill');
+  const confidenceValue = document.getElementById('confidenceValue');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+
+  async function pollCurrentLetter() {
+    try {
+      const res = await fetch('/current_letter');
+      const data = await res.json();
+
+      if (data.hand_visible && data.letter !== '-' && data.letter !== '?') {
+        letterChar.textContent = data.letter;
+        letterDisplay.classList.remove('idle');
+        cursor.style.display = 'none';
+        statusDot.classList.add('active');
+        statusText.textContent = 'Mão detectada · classificando';
+      } else if (data.hand_visible) {
+        letterChar.textContent = '';
+        letterDisplay.classList.add('idle');
+        cursor.style.display = 'inline-block';
+        statusDot.classList.add('active');
+        statusText.textContent = 'Mão detectada · confiança baixa, aguardando...';
+      } else {
+        letterChar.textContent = '-';
+        letterDisplay.classList.add('idle');
+        cursor.style.display = 'none';
+        statusDot.classList.remove('active');
+        statusText.textContent = 'Aguardando mão no quadro...';
+      }
+
+      const pct = Math.round((data.confidence || 0) * 100);
+      confidenceFill.style.width = pct + '%';
+      confidenceValue.textContent = pct + '%';
+    } catch (err) {
+      statusText.textContent = 'Erro ao conectar com o servidor.';
+    }
+  }
+
+  setInterval(pollCurrentLetter, 300);
+  pollCurrentLetter();
+</script>
+
+</body>
+</html>
